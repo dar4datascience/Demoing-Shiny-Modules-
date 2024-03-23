@@ -4,7 +4,7 @@ box::use(
         moduleServer,
         NS,
         tags,
-        enableBookmarking        ],
+        enableBookmarking],
          bslib[bs_theme,
                page_navbar,
                font_google, nav_panel],
@@ -13,7 +13,8 @@ box::use(
 
 box::use(app / view / plot_histogram,
          app / view / render_plot_in_card,
-         app / view / render_text_in_card,)
+         app / view / render_text_in_card,
+         )
 
 
 #' @export

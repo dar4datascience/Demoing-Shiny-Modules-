@@ -4,12 +4,12 @@ box::use(
 
 
 #' @export
-manager_R6 <- function(){
+manager_r6 <- function() {
   R6Class(
     "Manager",
     public = list(
       variable_name = NULL,
-      set_variable = function(variable_name){
+      set_variable = function(variable_name) {
         self$variable_name <- variable_name
       }
     )
