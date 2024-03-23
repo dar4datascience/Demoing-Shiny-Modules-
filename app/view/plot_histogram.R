@@ -1,7 +1,7 @@
 box::use(
   shiny[moduleServer, NS, reactive, varSelectInput],
   ggplot2[theme_set, ggplot, aes, geom_density, theme_bw, element_blank, theme],
-  palmerpenguins[penguins]
+  palmerpenguins[penguins],
 )
 
 #' @export
