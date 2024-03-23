@@ -4,7 +4,7 @@ box::use(
         moduleServer,
         NS,
         tags,
-        ],
+        enableBookmarking        ],
          bslib[bs_theme, card, card_header, page_sidebar, font_google],
          palmerpenguins[penguins],
          ggplot2[aes, theme_set, theme_bw], )
@@ -16,6 +16,7 @@ box::use(app / view / plot_histogram,
 #' @export
 ui <- function(id) {
   ns <- NS(id)
+  enableBookmarking()
   page_sidebar(
     title = "Penguins Demo dashboard",
     sidebar = plot_histogram$ui(ns("compute_histogram")),

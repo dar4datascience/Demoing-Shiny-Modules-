@@ -1,5 +1,7 @@
 box::use(
-  shiny[moduleServer, NS, reactive, varSelectInput],
+  shiny[moduleServer, NS, reactive, varSelectInput, tagList,
+        bookmarkButton
+  ],
   ggplot2[theme_set, ggplot, aes, geom_density, theme_bw, element_blank, theme],
   palmerpenguins[penguins],
 )
@@ -7,10 +9,13 @@ box::use(
 #' @export
 ui <- function(id) {
   ns <- NS(id)
-  varSelectInput(
+  tagList(
+    varSelectInput(
     ns("color_by"), "Color by",
     penguins[c("species", "island", "sex")],
     selected = "species"
+  ),
+  bookmarkButton()
   )
 }
 
