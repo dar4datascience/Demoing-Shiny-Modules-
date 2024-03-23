@@ -1,8 +1,13 @@
 box::use(
-  shiny[bootstrapPage, div, moduleServer, NS, renderUI, tags, uiOutput, plotOutput, varSelectInput, renderPlot, reactive],
+  shiny[bootstrapPage, div, moduleServer, NS, renderUI, tags, uiOutput, plotOutput, varSelectInput, renderPlot, ],
   bslib[bs_theme, card, card_header,page_sidebar, font_google],
-  ggplot2[theme_set, ggplot, aes, geom_density, theme_bw, element_blank, theme],
-  palmerpenguins[penguins]
+  palmerpenguins[penguins],
+  ggplot2[aes, theme_set, theme_bw]
+)
+
+box::use(
+  app/view/plot_histogram,
+  app/view/render_plot_in_card
 )
 
 
@@ -11,32 +16,16 @@ ui <- function(id){
   ns <- NS(id)
   page_sidebar(
     title = "Penguins Demo dashboard",
-    sidebar = varSelectInput(
-      ns("color_by"), "Color by",
-      penguins[c("species", "island", "sex")],
-      selected = "species"
-    ),
+    sidebar = plot_histogram$ui(ns("compute_histogram")),
     theme = bs_theme(
       bootswatch = "darkly",
       base_font = font_google("Inter"),
       navbar_bg = "#25443B"
     ),
     !!!list(
-      card(
-        full_screen = TRUE,
-        card_header("Bill Length"),
-        plotOutput(ns("bill_length"))
-      ),
-      card(
-        full_screen = TRUE,
-        card_header("Bill depth"),
-        plotOutput(ns("bill_depth"))
-      ),
-      card(
-        full_screen = TRUE,
-        card_header("Body Mass"),
-        plotOutput(ns("body_mass"))
-      )
+      render_plot_in_card$ui(ns("bill_length"), "Bill Length"),
+      render_plot_in_card$ui(ns("bill_depth"), "Bill Depth"),
+      render_plot_in_card$ui(ns("body_mass"), "Body Mass")
     )
   )
 }
@@ -52,16 +41,15 @@ server <- function(id) {
   moduleServer(id, function(input, output, session) {
 
     # New server logic (removes the `+ theme_bw()` part)
-      gg_plot <- reactive({
-        ggplot(penguins) +
-          geom_density(aes(fill = !!input$color_by), alpha = 0.2) +
-          theme(axis.title = element_blank())
-      })
+    # module sidebar
+    gg_plot <- plot_histogram$server("compute_histogram")
 
-      #
-      output$bill_length <- renderPlot(gg_plot() + aes(bill_length_mm))
-      output$bill_depth <- renderPlot(gg_plot() + aes(bill_depth_mm))
-      output$body_mass <- renderPlot(gg_plot() + aes(body_mass_g))
+      # module plot bill length
+      render_plot_in_card$server("bill_length", gg_plot, bill_length_mm)
+      # module plot bill depth
+      render_plot_in_card$server("bill_depth", gg_plot, bill_depth_mm)
+      # module plot body mass
+      render_plot_in_card$server("body_mass", gg_plot, body_mass_g)
 
   })
 }
