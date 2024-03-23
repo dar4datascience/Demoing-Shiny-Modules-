@@ -2,5 +2,6 @@
 library(bslib)
 library(ggplot2)
 library(palmerpenguins)
+library(R6)
 library(rhino)
 library(thematic)

@@ -5,31 +5,39 @@ box::use(
         NS,
         tags,
         enableBookmarking        ],
-         bslib[bs_theme, card, card_header, page_sidebar, font_google],
+         bslib[bs_theme,
+               page_navbar,
+               font_google, nav_panel],
          palmerpenguins[penguins],
          ggplot2[aes, theme_set, theme_bw], )
 
 box::use(app / view / plot_histogram,
-         app / view / render_plot_in_card, )
+         app / view / render_plot_in_card,
+         app / view / render_text_in_card,)
 
 
 #' @export
 ui <- function(id) {
   ns <- NS(id)
   enableBookmarking()
-  page_sidebar(
+  page_navbar(
     title = "Penguins Demo dashboard",
     sidebar = plot_histogram$ui(ns("compute_histogram")),
     theme = bs_theme(
-      bootswatch = "darkly",
+      bootswatch = "superhero",
       base_font = font_google("Inter"),
-      navbar_bg = "#25443B"
+      "navbar-bg" = "#25443B"
     ),
+    nav_panel("Plots",
     !!!list(
       render_plot_in_card$ui(ns("bill_length"), "Bill Length"),
       render_plot_in_card$ui(ns("bill_depth"), "Bill Depth"),
       render_plot_in_card$ui(ns("body_mass"), "Body Mass")
     )
+    ),
+    nav_panel("Demo R6",
+              render_text_in_card$ui(ns("r6_demo"))
+              )
   )
 }
 
@@ -42,6 +50,9 @@ theme_set(theme_bw(base_size = 16))
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
+
+    # R6 Demo
+    render_text_in_card$server("r6_demo")
     # New server logic (removes the `+ theme_bw()` part)
     # module sidebar
     gg_plot <- plot_histogram$server("compute_histogram")
